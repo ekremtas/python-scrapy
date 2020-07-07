@@ -9,8 +9,9 @@ class Example2Spider(scrapy.Spider):
     name='example2'
     start_urls=[]
 
-    for pg in range(2,30):
-        start_urls.append("https://www.hepsiburada.com/cep-telefonlari-c-371965?sayfa=%d" % (pg))
+    for pg in range(1,3):
+    #    start_urls.append("https://www.hepsiburada.com/cep-telefonlari-c-371965?sayfa=%d" % (pg))
+        start_urls.append("https://www.hepsiburada.com/iphone-ios-telefonlar-c-60005202?sayfa=%d" % (pg))
 
     def parse(self,response):
         for x in range(1,25):
@@ -21,7 +22,9 @@ class Example2Spider(scrapy.Spider):
                 print(url)
                 
                 print("\n\n------------------------")
-                yield scrapy.Request(url, callback=self.parse_page)
+                yorum= "-yorumlari"
+                yield scrapy.Request(("%s%s" % (url,yorum)), callback=self.parse_productpage)
+                #yield scrapy.Request(url, callback=self.parse_page, meta={'hero_url': ("%s%s" % (url,yorum)) })
         
         
 
@@ -34,7 +37,7 @@ class Example2Spider(scrapy.Spider):
         print(product_name)
         print("--------product-name-------")
         #product_allyorum = response.xpath("/html/body/div[4]/main/div[3]/section[3]/div/div/div[2]/div/div[2]/div[1]/ul/span/a/@href").extract()
-        product_allcomment = response.css('.button-more-results::attr(href)').extract()
+        product_allcomment = response.meta.get('hero_url')
         #product_brand ürün markası
         product_brand = response.css('.brand-name').css('::text').extract()
         #product_brand = response.xpath("/html/body/div[4]/main/div[3]/section[1]/div[4]/div/div[4]/div[1]/span/a/@href").extract()
@@ -72,18 +75,19 @@ class Example2Spider(scrapy.Spider):
 
         yield item
 
-    #def parse_yorumpage(self,response):
-     #   item = ExampleItem()
-      #  #product_name = response.xpath("/html/body/div[4]/main/div[3]/section[1]/div[4]/div/div[4]/div[1]/header/h1/text()").extract()
-       # product_allyorumlarr = response.css('#product-name').css('::text').extract()
-     #   print("--------product-name-------")
-      #  print(product_allyorumlarr)
-       # print("--------product-name-------")
+    def parse_productpage(self,response):
+        item = ExampleItem()
 
-        #item["product_allyorumlarr"]=product_allyorumlarr
+        product_name = response.css(".productRateBox-3_nOH").css('::text').extract()
+        product_allyorumlarr = response.xpath("/html/body/div[4]/main/div[2]/div/div/div/div/div/div/div/div/div/div/div[3]/div[2]/div[1]/div[1]/div[2]/div[2]/span/text").extract()
+        print("--------product-name-------")
+        print(product_allyorumlarr)
+        print("--------product-name-------")
+
+        item["product_allyorumlarr"]=product_allyorumlarr
 
 
-        #yield item.product_allyorumlarr
+        yield item
         
 
 

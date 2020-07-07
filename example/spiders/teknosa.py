@@ -7,11 +7,11 @@ from urllib.parse import urlparse
 
 class Example2Spider(scrapy.Spider):
     name = 'teknosa'
-    start_urls = []
+    start_urls = ["https://www.teknosa.com/apple-cep-telefonu-bc-100001"]
 
-    for pg in range(1, 50):
-        start_urls.append(
-            "https://www.teknosa.com/cep-telefonu-c-100001?q=%3Arelevance&page=0")
+    #for pg in range(1, 50):
+    #    start_urls.append(
+    #        "https://www.teknosa.com/cep-telefonu-c-100001?q=%3Arelevance&page=0")
 
     def parse(self, response):
         # for x in range(1,25):
@@ -23,7 +23,7 @@ class Example2Spider(scrapy.Spider):
             print(url)
 
             print("\n\n------------------------")
-            # yield scrapy.Request(url, callback=self.parse_page)
+            yield scrapy.Request(url, callback=self.parse_page)
 
     def parse_page(self, response):
         item = TeknosaItem()
